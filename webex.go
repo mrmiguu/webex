@@ -8,6 +8,7 @@ import (
 	"math"
 	"net/http"
 	"regexp"
+	"strconv"
 )
 
 // Scrape scrapes a web page for the regular expression area,
@@ -57,12 +58,16 @@ func ScrapeString(link, area, spot string) (string, error) {
 // then the area for the regular expression spot into an int.
 func ScrapeInt(link, area, spot string) (int, error) {
 	b, err := Scrape(link, area, spot)
-	return int(binary.BigEndian.Uint64(b)), err
+	if err != nil {
+		return 0, err
+	}
+	i, err := strconv.Atoi(string(b))
+	return i, err
 }
 
-// ScrapeFloat64 scrapes a web page for the regular expression area,
+// ScrapeFloat scrapes a web page for the regular expression area,
 // then the area for the regular expression spot into a float64.
-func ScrapeFloat64(link, area, spot string) (float64, error) {
+func ScrapeFloat(link, area, spot string) (float64, error) {
 	b, err := Scrape(link, area, spot)
 	return math.Float64frombits(binary.BigEndian.Uint64(b)), err
 }
